@@ -1,1 +1,2 @@
 @openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
+@glacis/contracts/=lib/v1-core/contracts/
