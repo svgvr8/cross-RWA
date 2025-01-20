@@ -5,3 +5,6 @@
 	path = lib/v1-core
 	url = https://github.com/glacislabs/v1-core
 	branch = range-versioned
+[submodule "lib/openzeppelin-contracts"]
+	path = lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
