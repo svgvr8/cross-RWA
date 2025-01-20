@@ -2,3 +2,7 @@
 src = "src"
 out = "out"
 libs = ["lib"]
+
+[rpc_endpoints]
+optimism = "https://optimism-sepolia.blastapi.io/adafb88b-6012-4705-8aed-eeabbeed35da"
+arbitrum = "https://arbitrum-sepolia.blastapi.io/adafb88b-6012-4705-8aed-eeabbeed35da"
