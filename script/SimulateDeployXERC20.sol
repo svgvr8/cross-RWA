@@ -6,12 +6,12 @@ import {SimpleTokenMediator} from "@glacis/contracts/mediators/SimpleTokenMediat
 import {GlacisCommons} from "@glacis/contracts/commons/GlacisCommons.sol";
 import "forge-std/Script.sol";
 
-/** GOALS
+/** GOALS OF THE DEMO
 
-1. Deploy a new xERC20 token
-2. Deploy SimpleTokenMediator contract
-3. Set the xERC20 token to use the SimpleTokenMediator
-4. Send through multiple pathways
+1. Deploy a new xERC20 token on 2 chains
+2. Deploy 2 SimpleTokenMediator contracts on each chain
+3. Set the xERC20 token to use the SimpleTokenMediators
+4. Send through two GMP pathways, as configured within the SimpleTokenMediators
 
 In documentation, explain why this is easier & how its done.
 Explain how the SimpleTokenMediator contract can be edited to:
@@ -72,6 +72,7 @@ contract SimulateDeployXERC20 is Script, GlacisCommons {
         vm.startBroadcast(tx.origin);
 
         // On Optimism, set SimpleMediatorToken reserved for Wormhole to accept requests from Arbitrum
+        // A custom smart contract can be written to simplify configuration process, if desired
         opt_mediator_wh.addAllowedRoute(GlacisRoute(
             WILDCARD,
             bytes32(uint256(uint160(address(arb_mediator_wh)))),

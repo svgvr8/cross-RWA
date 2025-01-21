@@ -7,13 +7,20 @@ import {GlacisCommons} from "@glacis/contracts/commons/GlacisCommons.sol";
 import "forge-std/Script.sol";
 
 contract SendToken is Script, GlacisCommons {
-    address constant XERC20 = 0x5f40dF87488DD1e3EBAf21eE90e1e959854440e1;
-    address constant SIMPLE_TOKEN_MEDIATOR = 0xeA1BC1a5d8F10410a3f49979BC470Ae35320CA63;
-    uint256 constant DEST_CHAIN_ID = 10;
-    address constant GMP_CHAIN_ID = address(3);
+    // address constant CHAIN_TO_RUN_ON = "arbitrum";
+    // address constant GMP_CHAIN_ID = address(3);
+    // uint256 constant DEST_CHAIN_ID = 10;
+    // address constant XERC20 = 0x5f40dF87488DD1e3EBAf21eE90e1e959854440e1;
+    // address constant SIMPLE_TOKEN_MEDIATOR = 0xeA1BC1a5d8F10410a3f49979BC470Ae35320CA63;
+
+    string constant CHAIN_TO_RUN_ON = "optimism";
+    address constant GMP_CHAIN_ID = address(2);
+    uint256 constant DEST_CHAIN_ID = 42161;
+    address constant XERC20 = 0x5E418E3C38d79A056003638A83616fdaF246F6bC;
+    address constant SIMPLE_TOKEN_MEDIATOR = 0x247612C16500c50C989F8998a82f3d488D06DDA5;
 
     function run() external {
-        vm.createSelectFork("arbitrum");
+        vm.createSelectFork(CHAIN_TO_RUN_ON);
         vm.startBroadcast(tx.origin);
 
         // Now send a token from arbitrum to optimism
