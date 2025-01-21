@@ -23,10 +23,10 @@ Explain how the SimpleTokenMediator contract can be edited to:
 contract DeployXERC20 is Script, GlacisCommons {
 
     // Optimism Testnet
-    // address constant GLACIS_ROUTER = 0xefc27DdE9474468ED81054391c03560a2A217b87;
+    // address constant GLACIS_ROUTER = 0xb515a38AE7FAb6F85aD03cBBa227D8c198823180;
 
     // Arbitrum Testnet
-    address constant GLACIS_ROUTER = 0x51f4510b1488d03A4c8C699fEa3c0B745a042e45;
+    address constant GLACIS_ROUTER = 0x46c2996ee4391787Afef520543c78f2C1aE3fE22;
 
     function run() external {
         vm.startBroadcast(tx.origin);

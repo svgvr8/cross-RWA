@@ -21,10 +21,12 @@ Explain how the SimpleTokenMediator contract can be edited to:
 */
 
 contract SimulateDeployXERC20 is Script, GlacisCommons {
-    address constant GLACIS_ROUTER_OPTIMISM = 0xefc27DdE9474468ED81054391c03560a2A217b87;
-    address constant GLACIS_ROUTER_ARBITRUM = 0x51f4510b1488d03A4c8C699fEa3c0B745a042e45;
-    uint256 constant OPTIMISM_TESTNET_CHAIN_ID = 11155420;
-    uint256 constant ARBITRUM_TESTNET_CHAIN_ID = 421614;
+    address constant GLACIS_ROUTER_OPTIMISM = 0xb515a38AE7FAb6F85aD03cBBa227D8c198823180;
+    address constant GLACIS_ROUTER_ARBITRUM = 0x46c2996ee4391787Afef520543c78f2C1aE3fE22;
+    uint256 constant OPTIMISM_TESTNET_CHAIN_ID = 10;
+    uint256 constant ARBITRUM_TESTNET_CHAIN_ID = 42161;
+
+    uint256 constant AMOUNT_TO_SEND = 1 ether / 10;
 
     function run() external {
         uint256 optimismFork = vm.createSelectFork(vm.rpcUrl("optimism"));
@@ -114,23 +116,36 @@ contract SimulateDeployXERC20 is Script, GlacisCommons {
         counterparts[0] = bytes32(uint256(uint160(address(opt_mediator_lz))));
         arb_mediator_lz.addRemoteCounterparts(chainIDs, counterparts);
 
-        // Now send a token from arbitrum to optimism
-        arb_xerc20.approve(address(arb_mediator_wh), 1 ether);
+        // Now send a token from arbitrum to optimism via Wormhole
+        arb_xerc20.approve(address(arb_mediator_wh), AMOUNT_TO_SEND);
         address[] memory adapters = new address[](1);
-        adapters[0] = address(3); // Wormhole
         CrossChainGas[] memory fees = new CrossChainGas[](1);
+        adapters[0] = address(3); // WH
         fees[0] = CrossChainGas(
             0,
-            uint128(80_000_000_000_000_000)
+            uint128(100_000_000_000_000)
         );
-        arb_mediator_wh.sendCrossChain{ value: 80_000_000_000_000_000  }(
+        arb_mediator_wh.sendCrossChain{ value: 100_000_000_000_000  }(
             OPTIMISM_TESTNET_CHAIN_ID,
             bytes32(uint256(uint160(address(tx.origin)))),
             adapters,
             fees,
             tx.origin,
-            1 ether
+            AMOUNT_TO_SEND
         );
+
+        // Also send a token from arbitrum to optimism via LayerZero
+        arb_xerc20.approve(address(arb_mediator_lz), AMOUNT_TO_SEND);
+        adapters[0] = address(2); // LZ
+        arb_mediator_lz.sendCrossChain{ value: 100_000_000_000_000  }(
+            OPTIMISM_TESTNET_CHAIN_ID,
+            bytes32(uint256(uint160(address(tx.origin)))),
+            adapters,
+            fees,
+            tx.origin,
+            AMOUNT_TO_SEND
+        );
+
 
         vm.stopBroadcast();
     }
