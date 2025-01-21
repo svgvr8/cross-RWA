@@ -20,7 +20,7 @@ Explain how the SimpleTokenMediator contract can be edited to:
 
 */
 
-contract DeployXERC20 is Script, GlacisCommons {
+contract SimulateDeployXERC20 is Script, GlacisCommons {
     address constant GLACIS_ROUTER_OPTIMISM = 0xefc27DdE9474468ED81054391c03560a2A217b87;
     address constant GLACIS_ROUTER_ARBITRUM = 0x51f4510b1488d03A4c8C699fEa3c0B745a042e45;
     uint256 constant OPTIMISM_TESTNET_CHAIN_ID = 11155420;
@@ -37,6 +37,10 @@ contract DeployXERC20 is Script, GlacisCommons {
         SimpleTokenMediator opt_mediator_wh = new SimpleTokenMediator(GLACIS_ROUTER_OPTIMISM, 1, tx.origin);
         SimpleTokenMediator opt_mediator_lz = new SimpleTokenMediator(GLACIS_ROUTER_OPTIMISM, 1, tx.origin);
 
+        // Set the mediators to mediate the token
+        opt_mediator_wh.setXERC20(address(opt_xerc20));
+        opt_mediator_lz.setXERC20(address(opt_xerc20));
+
         // Give the mediator the ability to mint tokens (100 per day, both ways)
         opt_xerc20.setLimits(address(opt_mediator_wh), 100 ether, 100 ether);
         opt_xerc20.setLimits(address(opt_mediator_lz), 100 ether, 100 ether);
@@ -50,6 +54,9 @@ contract DeployXERC20 is Script, GlacisCommons {
         BasicXERC20Sample arb_xerc20 = new BasicXERC20Sample(tx.origin);
         SimpleTokenMediator arb_mediator_wh = new SimpleTokenMediator(GLACIS_ROUTER_ARBITRUM, 1, tx.origin);
         SimpleTokenMediator arb_mediator_lz = new SimpleTokenMediator(GLACIS_ROUTER_ARBITRUM, 1, tx.origin);
+
+        arb_mediator_wh.setXERC20(address(arb_xerc20));
+        arb_mediator_lz.setXERC20(address(arb_xerc20));
 
         arb_xerc20.setLimits(address(arb_mediator_wh), 100 ether, 100 ether);
         arb_xerc20.setLimits(address(arb_mediator_lz), 100 ether, 100 ether);
@@ -110,13 +117,13 @@ contract DeployXERC20 is Script, GlacisCommons {
         // Now send a token from arbitrum to optimism
         arb_xerc20.approve(address(arb_mediator_wh), 1 ether);
         address[] memory adapters = new address[](1);
-        adapters[0] = address(2); // Wormhole
+        adapters[0] = address(3); // Wormhole
         CrossChainGas[] memory fees = new CrossChainGas[](1);
         fees[0] = CrossChainGas(
             0,
             uint128(80_000_000_000_000_000)
         );
-        arb_mediator_lz.sendCrossChain{ value: 80_000_000_000_000_000  }(
+        arb_mediator_wh.sendCrossChain{ value: 80_000_000_000_000_000  }(
             OPTIMISM_TESTNET_CHAIN_ID,
             bytes32(uint256(uint160(address(tx.origin)))),
             adapters,
