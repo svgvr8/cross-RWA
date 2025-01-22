@@ -14,3 +14,9 @@ Sends a token from one chain to another (change the constants within the script 
 ```
 forge script script/SendToken.sol --broadcast --private-key $PRIVATE_KEY
 ```  
+
+Adds a new SimpleTokenMediator to the token:  
+
+```
+forge script sccript/AddNewPath.sol --broadcast --private-key $PRIVATE_KEY
+```
