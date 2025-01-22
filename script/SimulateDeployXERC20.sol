@@ -6,20 +6,8 @@ import {SimpleTokenMediator} from "@glacis/contracts/mediators/SimpleTokenMediat
 import {GlacisCommons} from "@glacis/contracts/commons/GlacisCommons.sol";
 import "forge-std/Script.sol";
 
-/** GOALS OF THE DEMO
-
-1. Deploy a new xERC20 token on 2 chains
-2. Deploy 2 SimpleTokenMediator contracts on each chain
-3. Set the xERC20 token to use the SimpleTokenMediators
-4. Send through two GMP pathways, as configured within the SimpleTokenMediators
-
-In documentation, explain why this is easier & how its done.
-Explain how the SimpleTokenMediator contract can be edited to:
-1. Have a preconfigured & set bridge, so that limits can be placed between the tokens
-2. Have limit functionality be baked within it as well.
-
-*/
-
+/// @notice Deploys an XERC20 on Optimism & Arbitrum, gives them 2 SimpleTokenMediators with different
+/// configurations and bridges through them.
 contract SimulateDeployXERC20 is Script, GlacisCommons {
     address constant GLACIS_ROUTER_OPTIMISM = 0xb515a38AE7FAb6F85aD03cBBa227D8c198823180;
     address constant GLACIS_ROUTER_ARBITRUM = 0x46c2996ee4391787Afef520543c78f2C1aE3fE22;
