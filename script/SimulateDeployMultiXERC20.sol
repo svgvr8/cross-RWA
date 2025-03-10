@@ -8,7 +8,7 @@ import "forge-std/Script.sol";
 
 /// @notice Deploys an XERC20 on Optimism & Arbitrum, gives them 2 SimpleTokenMediators with different
 /// configurations and bridges through them.
-contract SimulateDeployXERC20 is Script, GlacisCommons {
+contract SimulateDeployMultiXERC20 is Script, GlacisCommons {
     address constant GLACIS_ROUTER_OPTIMISM = 0xb515a38AE7FAb6F85aD03cBBa227D8c198823180;
     address constant GLACIS_ROUTER_ARBITRUM = 0x46c2996ee4391787Afef520543c78f2C1aE3fE22;
     uint256 constant OPTIMISM_TESTNET_CHAIN_ID = 10;

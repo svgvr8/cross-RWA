@@ -28,9 +28,9 @@ contract AddNewPath is Script, GlacisCommons {
 
     uint256 constant AMOUNT_TO_SEND = 1 ether / 10;
 
-    address constant XERC20_OPTIMISM = 0x5E418E3C38d79A056003638A83616fdaF246F6bC;
-    address constant XERC20_ARBITRUM = 0xAA04F4A0EEb90Fd0660cca8909ccEC74Dc6cd6EB;
-    address constant GMP_ID = address(1);
+    address constant XERC20_OPTIMISM = 0x0c2093c25932D0416C8943CBA70063Dc7461f99E;
+    address constant XERC20_ARBITRUM = 0xE2e81C6a0ADd05Be1E3E65E09c307dC54F05a7cA;
+    address constant GMP_ID = address(1); // Axelar
 
     function run() external {
         uint256[] memory chainIDs = new uint256[](1);

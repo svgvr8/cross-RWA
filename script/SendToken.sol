@@ -14,10 +14,10 @@ contract SendToken is Script, GlacisCommons {
     // address constant SIMPLE_TOKEN_MEDIATOR = 0xeA1BC1a5d8F10410a3f49979BC470Ae35320CA63;
 
     string constant CHAIN_TO_RUN_ON = "optimism";
-    address constant GMP_CHAIN_ID = address(2);
+    address constant GMP_CHAIN_ID = address(3);
     uint256 constant DEST_CHAIN_ID = 42161;
-    address constant XERC20 = 0x5E418E3C38d79A056003638A83616fdaF246F6bC;
-    address constant SIMPLE_TOKEN_MEDIATOR = 0x247612C16500c50C989F8998a82f3d488D06DDA5;
+    address constant XERC20 = 0x0c2093c25932D0416C8943CBA70063Dc7461f99E;
+    address constant SIMPLE_TOKEN_MEDIATOR = 0x198ddC2836753Cf42D384d7DE6b3C210019cc305;
 
     function run() external {
         vm.createSelectFork(CHAIN_TO_RUN_ON);
