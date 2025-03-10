@@ -6,25 +6,32 @@ import {SimpleTokenMediator} from "@glacis/contracts/mediators/SimpleTokenMediat
 import {GlacisCommons} from "@glacis/contracts/commons/GlacisCommons.sol";
 import "forge-std/Script.sol";
 
+// ARBITRUM: 0xC23436e54fEBF9cFdD5FDaD41142Ac7B706b8684 
+// OPTIMISM: 0xa54B373A9e8305604F66836396073eE24ab09322
+
 /// @notice Just deploys a SimpleTokenMediator on optimism and arbitrum, for a given XERC20.
 contract SimulateDeployMultiXERC20 is Script, GlacisCommons {
     address constant GLACIS_ROUTER_OPTIMISM = 0xb515a38AE7FAb6F85aD03cBBa227D8c198823180;
     address constant GLACIS_ROUTER_ARBITRUM = 0x46c2996ee4391787Afef520543c78f2C1aE3fE22;
-    address constant XERC20_ROUTER_OPTIMISM = address(0);
-    address constant XERC20_ROUTER_ARBITRUM = address(0);
+    address constant XERC20_OPTIMISM = 0x75B6AAEaF6DB9F2F5DFF09bc5ca6954c34Bd9fea;   // PYLON
+    address constant XERC20_ARBITRUM = 0x75B6AAEaF6DB9F2F5DFF09bc5ca6954c34Bd9fea;   // PYLON
     uint256 constant OPTIMISM_TESTNET_CHAIN_ID = 10;
     uint256 constant ARBITRUM_TESTNET_CHAIN_ID = 42161;
 
     function run() external {
+        console.log("Deploying SimpleTokenMediators with address:");
+        console.log(tx.origin);
+
         uint256 optimismFork = vm.createSelectFork(vm.rpcUrl("optimism"));
         vm.startBroadcast(tx.origin);
 
         // Create a SimpleTokenMediator, which are token bridges powered by Glacis
         SimpleTokenMediator opt_mediator = new SimpleTokenMediator(GLACIS_ROUTER_OPTIMISM, 1, tx.origin);
+        assert(opt_mediator.owner() == tx.origin);
 
         // Set the mediators to mediate the token
         // The mediator will not have the ability to mint tokens yet. It will have to be set by the token admin.
-        opt_mediator.setXERC20(address(XERC20_ROUTER_OPTIMISM));
+        opt_mediator.setXERC20(address(XERC20_OPTIMISM));
 
         vm.stopBroadcast();
 
@@ -33,7 +40,8 @@ contract SimulateDeployMultiXERC20 is Script, GlacisCommons {
         vm.startBroadcast(tx.origin);
 
         SimpleTokenMediator arb_mediator = new SimpleTokenMediator(GLACIS_ROUTER_ARBITRUM, 1, tx.origin);
-        arb_mediator.setXERC20(address(XERC20_ROUTER_ARBITRUM));
+        assert(arb_mediator.owner() == tx.origin);
+        arb_mediator.setXERC20(address(XERC20_ARBITRUM));
 
         vm.stopBroadcast();
 
