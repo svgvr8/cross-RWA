@@ -7,40 +7,60 @@ import {GlacisCommons} from "@glacis/contracts/commons/GlacisCommons.sol";
 import "forge-std/Script.sol";
 
 contract SendToken is Script, GlacisCommons {
-    // address constant CHAIN_TO_RUN_ON = "arbitrum";
-    // address constant GMP_CHAIN_ID = address(3);
-    // uint256 constant DEST_CHAIN_ID = 10;
-    // address constant XERC20 = 0x5f40dF87488DD1e3EBAf21eE90e1e959854440e1;
-    // address constant SIMPLE_TOKEN_MEDIATOR = 0xeA1BC1a5d8F10410a3f49979BC470Ae35320CA63;
-
-    string constant CHAIN_TO_RUN_ON = "optimism";
+    string constant CHAIN_TO_RUN_ON = "arbitrum";
     address constant GMP_CHAIN_ID = address(3);
-    uint256 constant DEST_CHAIN_ID = 42161;
-    address constant XERC20 = 0x0c2093c25932D0416C8943CBA70063Dc7461f99E;
-    address constant SIMPLE_TOKEN_MEDIATOR = 0x198ddC2836753Cf42D384d7DE6b3C210019cc305;
+    uint256 constant DEST_CHAIN_ID = 10;
+    address constant XERC20 = 0x75B6AAEaF6DB9F2F5DFF09bc5ca6954c34Bd9fea;
+    address constant SIMPLE_TOKEN_MEDIATOR = 0xC23436e54fEBF9cFdD5FDaD41142Ac7B706b8684;
+    uint256 constant AMOUNT_TO_SEND = 100000;
+
+    uint256 constant CROSS_CHAIN_GAS = 550_000_000_000_000;
+
+    // string constant CHAIN_TO_RUN_ON = "optimism";
+    // address constant GMP_CHAIN_ID = address(3);
+    // uint256 constant DEST_CHAIN_ID = 42161;
+    // address constant XERC20 = 0x75B6AAEaF6DB9F2F5DFF09bc5ca6954c34Bd9fea;
+    // address constant SIMPLE_TOKEN_MEDIATOR = 0xa54B373A9e8305604F66836396073eE24ab09322;
 
     function run() external {
         vm.createSelectFork(CHAIN_TO_RUN_ON);
         vm.startBroadcast(tx.origin);
 
         // Now send a token from arbitrum to optimism
-        BasicXERC20Sample(XERC20).approve(SIMPLE_TOKEN_MEDIATOR, 1 ether / 10);
+        BasicXERC20Sample(XERC20).approve(SIMPLE_TOKEN_MEDIATOR, AMOUNT_TO_SEND);
         address[] memory adapters = new address[](1);
         adapters[0] = GMP_CHAIN_ID;
         CrossChainGas[] memory fees = new CrossChainGas[](1);
         fees[0] = CrossChainGas(
             0,
-            uint128(100_000_000_000_000)
+            uint128(CROSS_CHAIN_GAS)
         );
-        SimpleTokenMediator(SIMPLE_TOKEN_MEDIATOR).sendCrossChain{ value: 100_000_000_000_000  }(
+        SimpleTokenMediator(SIMPLE_TOKEN_MEDIATOR).sendCrossChain{ value: CROSS_CHAIN_GAS  }(
             DEST_CHAIN_ID,
             bytes32(uint256(uint160(address(tx.origin)))),
             adapters,
             fees,
             tx.origin,
-            1 ether / 10
+            AMOUNT_TO_SEND
         );
 
         vm.stopBroadcast();
+    }
+
+    IWormholeRelayer constant WORMHOLE_RELAYER = IWormholeRelayer(0x27428DD2d3DD32A4D7f7C497eAaa23130d894911);
+
+    function _calculateCrossChainGasPrice(uint256 gas, uint256 dstChain, address gmp) internal view returns (uint256) {
+        
+
+        // For wormhole
+        if (gmp == address(3)) {
+            WORMHOLE_RELAYER.quoteEVMDeliveryPrice(
+                101, // TODO: map chain ID to Wormhole chain ID
+                0,
+                gas
+            );
+        }
+        // For layerzero (TODO)
+        return 200_000_000_000_000;
     }
 }
