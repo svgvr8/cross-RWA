@@ -9,7 +9,7 @@ import "forge-std/Script.sol";
 
 contract SendToken is Script, GlacisCommons {
     string constant CHAIN_TO_RUN_ON = "arbitrum";
-    address constant GMP_CHAIN_ID = address(4);
+    address constant GMP_CHAIN_ID = address(5);
     uint256 constant DEST_CHAIN_ID = 10;
     address constant XERC20 = 0x75B6AAEaF6DB9F2F5DFF09bc5ca6954c34Bd9fea;
     address constant SIMPLE_TOKEN_MEDIATOR =
@@ -67,27 +67,14 @@ contract SendToken is Script, GlacisCommons {
 
     IWormholeRelayer constant WORMHOLE_RELAYER =
         IWormholeRelayer(0x27428DD2d3DD32A4D7f7C497eAaa23130d894911);
-    ILayerZeroEndpoint constant LAYERZERO_ENDPOINT = 
-        ILayerZeroEndpoint(0x1a44076050125825900e736c501f859c50fE728c);
+    // ILayerZeroEndpoint constant LAYERZERO_ENDPOINT = 
+    //     ILayerZeroEndpoint(0x1a44076050125825900e736c501f859c50fE728c);
 
     function _calculateCrossChainGasPrice(
         uint256 gas,
         uint256 dstChain,
         address gmp
     ) internal view returns (uint128) {
-        // For LayerZero
-        if (gmp == address(2)) {
-            // Optimism: 
-            // Arbitrum: 0x1a44076050125825900e736c501f859c50fE728c
-            LAYERZERO_ENDPOINT.estimateFees(
-                _dstEid, 
-                _sender, 
-                _message, 
-                false, // _payInLzToken 
-                _options
-            );
-            return 10000000;
-        }
         // For wormhole
         if (gmp == address(3)) {
             (uint256 nativePriceQuote, ) = WORMHOLE_RELAYER.quoteEVMDeliveryPrice(
@@ -99,15 +86,7 @@ contract SendToken is Script, GlacisCommons {
             );
             return uint128(nativePriceQuote);
         }
-        // For hyperlane (TODO)
-        if (gmp == address(5)) {
-            return 550_000_000_000_000;
-        }
-        // For others, we can guesstimate
+        // For others, we can guess-timate for the sake of the demo
         return 200_000_000_000_000;
     }
-}
-
-interface ILayerZeroEndpoint {
-    function estimateFees(uint16 _dstEid, address _sender, bytes _message, bool _payInLzToken, bytes _options) external view returns (uint256 nativeFee, uint256 lzTokenFee);
 }
