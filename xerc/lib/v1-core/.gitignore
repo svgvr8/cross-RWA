@@ -1,0 +1,29 @@
+# Compiler files
+cache/
+out/
+
+# Ignores development broadcast logs
+!/broadcast
+/broadcast/*/31337/
+/broadcast/**/dry-run/
+
+# Docs
+docs/
+
+# Dotenv file
+.env
+
+node_modules
+cache_forge
+
+.vscode/
+package-lock.json
+forge-std
+ds-test
+
+coverage
+
+lcov.txt
+forge-pruned-lcov.info
+lcov.html
+report
